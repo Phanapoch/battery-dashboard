@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Solar Battery Dashboard - Tron Edition</title>
+    <!-- Legacy Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Orbitron:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=1.2.6">
+</head>
+<body class="tron-bg">
+    <div class="grid-overlay"></div>
+    
+    <header class="tron-header">
+        <h1 class="glitch-text" data-text="SOLAR BATT SYSTEM">SOLAR BATT SYSTEM</h1>
+        <div class="header-controls">
+            <button onclick="changeScale(-0.05)" class="tron-btn">−</button>
+            <button onclick="changeScale(0.05)" class="tron-btn">+</button>
+            <div id="status-tag" class="status-online">ONLINE</div>
+        </div>
+    </header>
+
+    <div id="debug-log" style="position:fixed; bottom:100px; left:10px; right:10px; height:80px; background:rgba(0,0,0,0.8); color:#0f0; font-size:10px; overflow-y:scroll; z-index:9999; border:1px solid #0f0; display:none;">
+        [DEBUG START]
+    </div>
+
+    <main class="dashboard-container">
+        <!-- Left: Battery Visual -->
+        <section class="card battery-card">
+            <div class="card-header">ENERGY STORAGE</div>
+            <div class="battery-visual-container">
+                <svg id="battery-svg" viewBox="0 0 100 200" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                        <linearGradient id="batt-gradient" x1="0%" y1="100%" x2="0%" y2="0%">
+                            <stop offset="0%" style="stop-color:#00f2ff;stop-opacity:1" />
+                            <stop id="gradient-stop" offset="0%" style="stop-color:#00f2ff;stop-opacity:1" />
+                            <stop id="gradient-top" offset="0%" style="stop-color:rgba(0,242,255,0.1);stop-opacity:0.2" />
+                        </linearGradient>
+                        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <rect x="10" y="20" width="80" height="170" rx="5" ry="5" class="batt-shell" filter="url(#glow)" />
+                    <rect x="35" y="5" width="30" height="15" rx="2" ry="2" class="batt-shell" filter="url(#glow)" />
+                    <rect id="batt-fill" x="15" y="25" width="70" height="160" rx="3" ry="3" fill="url(#batt-gradient)" />
+                </svg>
+                <div class="soc-display">
+                    <span id="soc-value">--</span><span class="unit">%</span>
+                </div>
+            </div>
+            <div id="charging-indicator">--</div>
+        </section>
+
+        <!-- Right: Stats and Chart -->
+        <div class="right-panel">
+            <section class="stats-panel">
+                <div class="stat-box">
+                    <div class="stat-label">POWER</div>
+                    <div class="stat-value"><span id="power-val">--</span> <small>W</small></div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">VOLTAGE</div>
+                    <div class="stat-value"><span id="voltage-val">--</span> <small>V</small></div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">CURRENT</div>
+                    <div class="stat-value"><span id="current-val">--</span> <small>A</small></div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">TEMP</div>
+                    <div class="stat-value"><span id="temp-val">--</span> <small>°C</small></div>
+                </div>
+            </section>
+
+            <section class="card chart-card">
+                <div class="card-header">SOC HISTORY (24H)</div>
+                <div class="chart-container">
+                    <canvas id="soc-chart"></canvas>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Detailed Battery Pack Info -->
+    <section class="pack-details-container">
+        <div id="pack-grid" class="pack-grid">
+            <!-- Pack units generated via JS -->
+        </div>
+    </section>
+
+    <!-- Weather Forecast Timeline -->
+    <section class="weather-forecast-container">
+        <div class="card weather-card">
+            <div class="card-header">WEATHER FORECAST (48H)</div>
+            <div id="weather-timeline" class="weather-timeline">
+                <!-- Weather steps generated via JS -->
+            </div>
+        </div>
+    </section>
+
+    <footer class="tron-footer">
+        <div id="clock-container">
+            <div id="clock">00:00:00</div>
+            <div id="date">DAY, 00 MONTH 0000</div>
+        </div>
+        <div class="system-id">ARIIA-OS v1.2.6</div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+    <!-- Chart.js v2.9.4 for Legacy Browser Compatibility (iPad 3) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <script src="app.js?v=1.2.6"></script>
+</body>
+</html>

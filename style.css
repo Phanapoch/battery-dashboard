@@ -1,0 +1,222 @@
+/* Tron Legacy Theme - Battery Dashboard - v1.2.6 (Simplicity & Portrait Scroll Fix) */
+:root {
+    --tron-blue: #00f2ff;
+    --tron-dark: #000a12;
+    --tron-grid: #00232e;
+    --glow-color: rgba(0, 242, 255, 0.4);
+    --warn-orange: #ff8c00;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body.tron-bg {
+    background-color: var(--tron-dark);
+    color: var(--tron-blue);
+    font-family: 'Orbitron', 'Roboto Mono', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto; /* Allow scrolling on Android/iPad */
+    position: relative;
+    padding: 5px;
+}
+
+.grid-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: 
+        -webkit-linear-gradient(var(--tron-grid) 1px, transparent 1px),
+        -webkit-linear-gradient(90deg, var(--tron-grid) 1px, transparent 1px);
+    background-image: 
+        linear-gradient(var(--tron-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--tron-grid) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: center;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Header */
+.tron-header {
+    display: -webkit-flex; display: flex;
+    -webkit-justify-content: space-between; justify-content: space-between;
+    -webkit-align-items: center; align-items: center;
+    border-bottom: 2px solid var(--tron-blue);
+    padding-bottom: 3px;
+    margin-bottom: 5px;
+}
+
+.glitch-text { font-size: 1.1em; font-weight: bold; letter-spacing: 2px; }
+
+.header-controls { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; }
+.tron-btn {
+    background: transparent; border: 1px solid var(--tron-blue);
+    color: var(--tron-blue); font-family: 'Orbitron', sans-serif;
+    width: 30px; height: 30px; margin: 0 5px; cursor: pointer;
+}
+
+/* Main Dashboard Container */
+.dashboard-container {
+    display: -webkit-flex; display: flex;
+    -webkit-flex-direction: row; flex-direction: row;
+    max-width: 100%;
+    margin: 0 auto;
+    transition: transform 0.2s ease-out;
+    transform-origin: top center;
+}
+
+/* Portrait Mode Adjustments */
+@media screen and (orientation: portrait) {
+    .dashboard-container {
+        -webkit-flex-direction: column;
+        flex-direction: column;
+    }
+    .battery-card { margin-right: 0 !important; margin-bottom: 10px; }
+    .battery-visual-container { height: 220px !important; }
+}
+
+.battery-card { -webkit-flex: 1; flex: 1; margin-right: 10px; display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; }
+.right-panel { -webkit-flex: 1.3; flex: 1.3; display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; min-width: 0; }
+
+.card {
+    background: rgba(0, 10, 18, 0.85);
+    border: 1px solid var(--tron-blue);
+    box-shadow: 0 0 10px var(--glow-color);
+    padding: 10px;
+    margin-bottom: 8px;
+    position: relative;
+}
+
+.card-header {
+    border-bottom: 1px solid var(--tron-blue);
+    margin-bottom: 8px;
+    padding-bottom: 3px;
+    font-size: 0.8em;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Battery Visual */
+.battery-visual-container { position: relative; height: 240px; }
+#battery-svg { height: 100%; display: block; margin: 0 auto; }
+
+.soc-display {
+    position: absolute; top: 50%; left: 50%;
+    -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%);
+    font-size: 3.5em; font-weight: bold; color: #fff;
+    text-shadow: 0 0 20px var(--tron-blue);
+    z-index: 100;
+}
+
+#charging-indicator {
+    color: var(--tron-blue);
+    font-size: 0.9em;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 5px;
+    min-height: 1.2em;
+}
+
+/* Stats */
+.stats-panel { display: -webkit-flex; display: flex; -webkit-flex-wrap: wrap; flex-wrap: wrap; margin-bottom: 5px; }
+.stat-box {
+    -webkit-flex: 1 0 45%; flex: 1 0 45%;
+    background: rgba(0, 161, 255, 0.05);
+    border: 1px solid rgba(0, 242, 255, 0.3);
+    padding: 8px; margin: 2px;
+}
+.stat-label { font-size: 0.7em; color: rgba(0, 242, 255, 0.7); }
+.stat-value { font-size: 1.6em; font-weight: bold; }
+
+/* Chart */
+.chart-card { -webkit-flex: 1; flex: 1; display: -webkit-flex; display: flex; -webkit-flex-direction: column; margin-bottom: 5px; min-width: 0; }
+.chart-container { -webkit-flex: 1; flex: 1; position: relative; min-height: 100px; width: 100%; }
+
+/* Individual Pack Units (Horizontal Scroll) */
+.pack-details-container { margin-top: 2px; padding: 0 5px; width: 100%; overflow: hidden; }
+.pack-grid {
+    display: -webkit-flex; display: flex;
+    -webkit-flex-wrap: nowrap; flex-wrap: nowrap;
+    -webkit-justify-content: flex-start; justify-content: flex-start;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+}
+
+.pack-unit {
+    -webkit-flex: 0 0 140px; flex: 0 0 140px;
+    background: rgba(0, 35, 46, 0.8);
+    border: 2px solid rgba(0, 242, 255, 0.4);
+    padding: 8px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.75em;
+    position: relative;
+    overflow: hidden;
+}
+
+.pack-unit-header { border-bottom: 1px solid var(--tron-blue); margin-bottom: 5px; font-weight: bold; display: -webkit-flex; display: flex; -webkit-justify-content: space-between; justify-content: space-between; }
+.pack-stat-row { display: -webkit-flex; display: flex; -webkit-justify-content: space-between; justify-content: space-between; margin-bottom: 2px; }
+.pack-stat-value { font-weight: bold; }
+.pack-vdiff { color: #ffcc00; font-size: 0.9em; }
+
+/* No more flow background animations as requested */
+.pack-bg-flow { display: none; }
+
+.pack-charging { border-color: var(--tron-blue); box-shadow: inset 0 0 10px var(--tron-blue); }
+.pack-discharging { border-color: var(--warn-orange); box-shadow: inset 0 0 10px var(--warn-orange); }
+
+/* Weather Forecast */
+.weather-forecast-container { padding: 0 5px; margin-top: 5px; margin-bottom: 100px; }
+.weather-timeline {
+    display: -webkit-flex; display: flex;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    padding: 5px 0; gap: 8px;
+}
+.weather-step { -webkit-flex: 0 0 85px; flex: 0 0 85px; text-align: center; font-size: 0.6em; padding: 5px; border-right: 1px solid rgba(0, 242, 255, 0.1); }
+
+/* Force 2 lines for date/time */
+.weather-date-part { display: block; font-weight: bold; color: var(--tron-blue); margin-bottom: 1px; }
+.weather-time-part { display: block; opacity: 0.8; font-size: 0.9em; }
+
+.weather-tomorrow .weather-date-part, 
+.weather-tomorrow .weather-time-part { color: var(--warn-orange) !important; opacity: 1; }
+
+.weather-temp { font-size: 1.3em; font-weight: bold; color: #fff; }
+.weather-icon-box img { width: 30px; height: 30px; }
+
+/* Footer & Clock */
+.tron-footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(0, 10, 18, 0.95);
+    border-top: 2px solid var(--tron-blue);
+    padding: 8px 20px;
+    display: -webkit-flex; display: flex;
+    -webkit-justify-content: space-between; justify-content: space-between;
+    -webkit-align-items: center; align-items: center;
+    z-index: 2000;
+}
+
+#clock { font-size: 2em; font-weight: bold; color: #fff; text-shadow: 0 0 15px var(--tron-blue); line-height: 1; }
+#date { font-size: 0.8em; color: var(--tron-blue); opacity: 0.8; }
+
+/* Main Battery Animation Prefixes - FIXED ORANGE COLOR */
+@-webkit-keyframes glow-charging { from { stroke-width: 2px; stroke-opacity: 0.6; } to { stroke-width: 5px; stroke-opacity: 1; } }
+@keyframes glow-charging { from { stroke-width: 2px; stroke-opacity: 0.6; } to { stroke-width: 5px; stroke-opacity: 1; } }
+
+@-webkit-keyframes glow-discharging { from { stroke-width: 2px; stroke-opacity: 0.4; } to { stroke-width: 5px; stroke-opacity: 0.9; } }
+@keyframes glow-discharging { from { stroke-width: 2px; stroke-opacity: 0.4; } to { stroke-width: 5px; stroke-opacity: 0.9; } }
+
+.charging-anim {
+    -webkit-animation: glow-charging 1.5s infinite alternate ease-in-out;
+    animation: glow-charging 1.5s infinite alternate ease-in-out;
+    stroke: var(--tron-blue) !important;
+}
+
+.discharging-anim {
+    -webkit-animation: glow-discharging 2s infinite alternate ease-in-out;
+    animation: glow-discharging 2s infinite alternate ease-in-out;
+    stroke: var(--warn-orange) !important; /* BACK TO ORANGE */
+}
+
+.batt-shell { transition: stroke 1s; }
+.hidden { display: none !important; }
