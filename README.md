@@ -2,7 +2,7 @@
 
 A real-time energy monitoring dashboard designed specifically for legacy devices like **iPad 3 (iOS 9/10)**. It features a futuristic Tron Legacy theme with glowing neon elements and provides a comprehensive view of your solar battery system.
 
-![Dashboard Preview](https://github.com/Phanapoch/battery-dashboard/raw/main/preview.jpg) *(Example Preview)*
+![Dashboard Preview](preview.png) *(Example Preview)*
 
 ## ✨ Features
 - **Real-time Data:** Live updates from Home Assistant via WebSockets (falling back to Polling for legacy browsers).
