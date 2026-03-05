@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  battery-dashboard:
+    build: .
+    container_name: battery-dashboard
+    ports:
+      - "0.0.0.0:5000:5000"
+    volumes:
+      - ./soc_history.json:/app/soc_history.json
+      - ./weather_cache.json:/app/weather_cache.json
+      - ./.env:/app/.env
+    environment:
+      - HA_URL=${HA_URL}
+      - HA_TOKEN=${HA_TOKEN}
+      - OWM_API_KEY=${OWM_API_KEY}
+    restart: unless-stopped
