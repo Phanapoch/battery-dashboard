@@ -12,7 +12,7 @@
         console.log(msg);
     }
 
-    log('App Init - v1.2.7 - Layout & Simplification');
+    log('App Init - v1.2.8 - Layout & Simplification');
 
     var serverUrl = 'http://' + window.location.hostname + ':5000';
     var socket = io(serverUrl, { transports: ['polling', 'websocket'], upgrade: true, reconnection: true });
@@ -34,6 +34,7 @@
 
     var socChart = null;
     var socHistory = [];
+    var packEnergyData = {};  // Store energy data per pack
 
     function getTodayStart() { var d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime(); }
     function formatTime(ms) { var d = new Date(ms); var h = d.getHours(); var m = d.getMinutes(); return (h < 10 ? '0'+h : h) + ':' + (m < 10 ? '0'+m : m); }
@@ -73,6 +74,32 @@
     socket.on('solar_data', function(data) {
         updateUI(data);
         updatePackGrid(data);
+    });
+
+    socket.on('pack_energy', function(data) {
+        packEnergyData = data;
+        log('Energy data updated');
+        // Re-render pack grid to show energy info if flipped
+        var dataEl = document.getElementById('pack-grid');
+        if (dataEl) {
+            var currentData = { packs: {} };
+            var els = document.querySelectorAll('.pack-unit');
+            for (var i = 0; i < els.length; i++) {
+                var id = els[i].id.replace('pack-unit-', '');
+                var socEl = els[i].querySelector('.pack-unit-header span:last-child');
+                var soc = socEl ? parseInt(socEl.textContent) : 0;
+                var voltEl = els[i].querySelector('.pack-stat-row:nth-child(2) .pack-stat-value');
+                var volt = voltEl ? parseFloat(voltEl.textContent) : 0;
+                var currEl = els[i].querySelector('.pack-stat-row:nth-child(3) .pack-stat-value');
+                var curr = currEl ? parseFloat(currEl.textContent) : 0;
+                var tempEl = els[i].querySelector('.pack-stat-row:nth-child(4) .pack-stat-value');
+                var temp = tempEl ? parseInt(tempEl.textContent) : 0;
+                currentData.packs[id] = { soc: soc, voltage: volt, current: curr, temp: temp };
+            }
+            if (Object.keys(currentData.packs).length > 0) {
+                updatePackGrid(currentData);
+            }
+        }
     });
 
     function updateUI(data) {
@@ -130,18 +157,40 @@
             var elId = 'pack-unit-' + id;
             var el = document.getElementById(elId);
             if (!el) {
-                el = document.createElement('div'); el.id = elId; el.className = 'pack-unit';
+                el = document.createElement('div');
+                el.id = elId;
+                el.className = 'pack-unit';
+                el.onclick = function() { this.classList.toggle('flipped'); };
+                el.innerHTML = '<div class="pack-card-inner"><div class="pack-card-front"></div><div class="pack-card-back"></div></div>';
                 packGrid.appendChild(el);
             }
-            var html = '<div class="pack-unit-header"><span>PACK ' + id + '</span><span>' + Math.round(pack.soc) + '%</span></div>';
-            html += '<div class="pack-stat-row"><span class="pack-stat-label">Volt:</span><span class="pack-stat-value">' + (pack.voltage ? pack.voltage.toFixed(1) : '--') + 'V</span></div>';
-            html += '<div class="pack-stat-row"><span class="pack-stat-label">Curr:</span><span class="pack-stat-value">' + (pack.current ? pack.current.toFixed(1) : '--') + 'A</span></div>';
-            html += '<div class="pack-stat-row"><span class="pack-stat-label">Temp:</span><span class="pack-stat-value">' + (pack.temp ? Math.round(pack.temp) : '--') + '°C</span></div>';
-            if (pack.vdiff !== undefined) html += '<div class="pack-stat-row pack-vdiff"><span class="pack-stat-label">Diff:</span><span class="pack-stat-value">' + pack.vdiff.toFixed(3) + 'V</span></div>';
-            el.innerHTML = html;
-            
+
+            // Get energy data for this pack
+            var energy = packEnergyData[id] || { in: 0, out: 0 };
+
+            // Front side - normal stats
+            var frontHtml = '<div class="pack-unit-header"><span>PACK ' + id + '</span><span>' + Math.round(pack.soc) + '%</span></div>';
+            frontHtml += '<div class="pack-stat-row"><span class="pack-stat-label">Volt:</span><span class="pack-stat-value">' + (pack.voltage ? pack.voltage.toFixed(1) : '--') + 'V</span></div>';
+            frontHtml += '<div class="pack-stat-row"><span class="pack-stat-label">Curr:</span><span class="pack-stat-value">' + (pack.current ? pack.current.toFixed(1) : '--') + 'A</span></div>';
+            frontHtml += '<div class="pack-stat-row"><span class="pack-stat-label">Temp:</span><span class="pack-stat-value">' + (pack.temp ? Math.round(pack.temp) : '--') + '°C</span></div>';
+            if (pack.vdiff !== undefined) frontHtml += '<div class="pack-stat-row pack-vdiff"><span class="pack-stat-label">Diff:</span><span class="pack-stat-value">' + pack.vdiff.toFixed(3) + 'V</span></div>';
+
+            // Back side - energy stats
+            var backHtml = '<div class="pack-unit-header"><span>PACK ' + id + '</span><span class="energy-hint">TAP TO FLIP</span></div>';
+            backHtml += '<div class="energy-section">';
+            backHtml += '<div class="energy-row energy-in"><span class="energy-label">IN</span><span class="energy-value">' + (energy.in / 1000).toFixed(2) + ' kWh</span></div>';
+            backHtml += '<div class="energy-row energy-out"><span class="energy-label">OUT</span><span class="energy-value">' + (energy.out / 1000).toFixed(2) + ' kWh</span></div>';
+            backHtml += '<div class="energy-row energy-net"><span class="energy-label">NET</span><span class="energy-value">' + ((energy.in - energy.out) / 1000).toFixed(2) + ' kWh</span></div>';
+            backHtml += '</div>';
+
+            var frontEl = el.querySelector('.pack-card-front');
+            var backEl = el.querySelector('.pack-card-back');
+            if (frontEl) frontEl.innerHTML = frontHtml;
+            if (backEl) backEl.innerHTML = backHtml;
+
             var curr = pack.current || 0;
             el.className = 'pack-unit' + (curr > 0.5 ? ' pack-charging' : (curr < -0.5 ? ' pack-discharging' : ''));
+            if (el.classList.contains('flipped')) el.className += ' flipped';
         }
     }
 

@@ -9,6 +9,7 @@ services:
     volumes:
       - ./soc_history.json:/app/soc_history.json
       - ./weather_cache.json:/app/weather_cache.json
+      - ./pack_energy.json:/app/pack_energy.json
       - ./.env:/app/.env
     environment:
       - HA_URL=${HA_URL}
