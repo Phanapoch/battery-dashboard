@@ -218,5 +218,51 @@ body.tron-bg {
     stroke: var(--warn-orange) !important; /* BACK TO ORANGE */
 }
 
+/* High Power Charging Glow (>3800W) */
+.high-power-glow {
+    -webkit-animation: glow-high-power 1s infinite alternate ease-in-out;
+    animation: glow-high-power 1s infinite alternate ease-in-out;
+    color: var(--warn-orange) !important;
+    text-shadow: 0 0 10px var(--warn-orange), 0 0 20px var(--warn-orange);
+}
+
+#power-val.high-power {
+    color: var(--warn-orange) !important;
+    text-shadow: 0 0 10px var(--warn-orange), 0 0 20px var(--warn-orange);
+    -webkit-animation: pulse-orange 1s infinite;
+    animation: pulse-orange 1s infinite;
+}
+
+#charging-indicator.high-power-glow {
+    color: var(--warn-orange) !important;
+    text-shadow: 0 0 10px var(--warn-orange), 0 0 20px var(--warn-orange);
+    -webkit-animation: pulse-orange 1s infinite;
+    animation: pulse-orange 1s infinite;
+}
+
+.battery-card.high-power-card {
+    box-shadow: 0 0 20px var(--warn-orange), inset 0 0 30px rgba(255, 140, 0, 0.2);
+    border-color: var(--warn-orange);
+}
+
+#battery-svg .batt-shell.high-power {
+    stroke: var(--warn-orange) !important;
+    filter: drop-shadow(0 0 8px var(--warn-orange));
+}
+
+#battery-svg.high-power-charging {
+    filter: drop-shadow(0 0 15px var(--warn-orange));
+}
+
+@keyframes glow-high-power {
+    from { text-shadow: 0 0 10px var(--warn-orange), 0 0 20px var(--warn-orange); }
+    to { text-shadow: 0 0 20px var(--warn-orange), 0 0 40px var(--warn-orange), 0 0 60px var(--warn-orange); }
+}
+
+@keyframes pulse-orange {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
 .batt-shell { transition: stroke 1s; }
 .hidden { display: none !important; }

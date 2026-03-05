@@ -12,7 +12,7 @@
         console.log(msg);
     }
 
-    log('App Init - v1.2.6 - Layout & Simplification');
+    log('App Init - v1.2.7 - Layout & Simplification');
 
     var serverUrl = 'http://' + window.location.hostname + ':5000';
     var socket = io(serverUrl, { transports: ['polling', 'websocket'], upgrade: true, reconnection: true });
@@ -87,14 +87,33 @@
                 var p = Math.round(data.power);
                 powerVal.textContent = Math.abs(p);
                 // Charging indicator and glow color
-                if (p > 50) { 
-                    chargingIndicator.className = ''; chargingIndicator.textContent = 'CHARGING ' + p + 'W'; 
+                // High power charging (>3500W) - orange glow
+                if (p > 3500) {
+                    powerVal.classList.add('high-power');
+                    chargingIndicator.className = 'high-power-glow';
+                    chargingIndicator.textContent = 'FAST CHARGING ' + p + 'W';
+                    document.getElementById('battery-svg').classList.add('high-power-charging');
+                    document.querySelector('.battery-card').classList.add('high-power-card');
+                    setBattAnimation('charging');
+                } else if (p > 50) {
+                    powerVal.classList.remove('high-power');
+                    chargingIndicator.className = '';
+                    chargingIndicator.textContent = 'CHARGING ' + p + 'W';
+                    document.getElementById('battery-svg').classList.remove('high-power-charging');
+                    document.querySelector('.battery-card').classList.remove('high-power-card');
                     setBattAnimation('charging');
                 } else if (p < -50) {
-                    chargingIndicator.className = ''; chargingIndicator.textContent = 'DISCHARGING ' + Math.abs(p) + 'W'; 
+                    powerVal.classList.remove('high-power');
+                    chargingIndicator.className = '';
+                    chargingIndicator.textContent = 'DISCHARGING ' + Math.abs(p) + 'W';
+                    document.getElementById('battery-svg').classList.remove('high-power-charging');
+                    document.querySelector('.battery-card').classList.remove('high-power-card');
                     setBattAnimation('discharging');
                 } else {
-                    chargingIndicator.className = 'hidden'; 
+                    powerVal.classList.remove('high-power');
+                    chargingIndicator.className = 'hidden';
+                    document.getElementById('battery-svg').classList.remove('high-power-charging');
+                    document.querySelector('.battery-card').classList.remove('high-power-card');
                     setBattAnimation('none');
                 }
             }
