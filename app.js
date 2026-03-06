@@ -203,16 +203,21 @@
             var d = new Date(item.t);
             var timeStr = (d.getHours() < 10 ? '0' + d.getHours() : d.getHours()) + ':00';
             var dateStr = (d.getDate() < 10 ? '0' + d.getDate() : d.getDate()) + '/' + (d.getMonth()+1 < 10 ? '0' + (d.getMonth()+1) : (d.getMonth()+1));
-            
+
             var isTomorrow = d.getDate() !== today;
             var wrapClass = isTomorrow ? 'weather-step weather-tomorrow' : 'weather-step';
             var iconUrl = 'http://openweathermap.org/img/wn/' + item.icon + '.png';
-            
-            html += '<div class="' + wrapClass + '">';
+
+            html += '<div class="' + wrapClass + '" onclick="this.classList.toggle(\'flipped\')">';
+            html += '<div class="weather-card-inner">';
+            html += '<div class="weather-card-front">';
             html += '<span class="weather-date-part">' + dateStr + '</span>';
             html += '<span class="weather-time-part">' + timeStr + '</span>';
-            html += '<div class="weather-icon-box"><img src="' + iconUrl + '" alt="icon" width="30" height="30"></div>';
+            html += '<div class="weather-icon-box"><img src="' + iconUrl + '" alt="icon" width="28" height="28"></div>';
             html += '<div class="weather-temp">' + Math.round(item.temp) + '°</div>';
+            html += '</div>';
+            html += '<div class="weather-card-back">' + item.desc + '</div>';
+            html += '</div>';
             html += '</div>';
         }
         weatherTimeline.innerHTML = html;
